@@ -1,7 +1,4 @@
-
-
 ![Haiku](.github/readme.png)
-
 
 Very simple POC, hits the yr.no API for the weather forecast (hard coded to Dublin at the moment), summarises it into a smaller string to save on the tokens that ChatGPT needs to process, and then requests that ChatGPT create a Haiku from it.
 
