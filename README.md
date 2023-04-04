@@ -5,10 +5,10 @@ Very simple POC, hits the yr.no API for the weather forecast (hard coded to Dubl
 With ChatGPT's API you pay by the tokens, basically 'words', both sent and received, so while we could ask for the weather forecast as a short fairytale, a Haiku is at least short and sweet.
 
 Next steps:
-- [ ] Put it on an AWS Lambda
+- [X] Take params for the coordinates
+- [X] Put it on an AWS Lambda
 - [ ] CI/CD for putting it on AWS
 - [ ] Cache ChatGPT results per timestamp and latlon, in Redis or Dynamo
-- [ ] Take params for the coordinates
 - [ ] Optimise the weather data being used
 - [ ] See if ChatGPT can be initialised with a template, so we can just send comma separated values to further miminise token count
 - [ ] Make a simple front-end for it
