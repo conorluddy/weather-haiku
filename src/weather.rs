@@ -1,22 +1,19 @@
 mod structs;
-use reqwest::header::USER_AGENT;
 use structs::WeatherData;
+use ureq::{get, Error};
 
-pub async fn get_current_weather(lat: f32, lon: f32) -> Result<WeatherData, reqwest::Error> {
+pub fn get_current_weather(lat: f32, lon: f32) -> Result<WeatherData, Error> {
     let url = format!(
         "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={}&lon={}",
         lat, lon
     );
-    let client = reqwest::Client::new();
-    let response = client
-        .get(url)
-        .header(USER_AGENT, "weatherpoem/0.1.0")
-        .send()
-        .await?;
 
-    let res = response.json::<WeatherData>().await?;
+    let response: WeatherData = get(&url)
+        .set("USER_AGENT", "weatherpoem/0.1.0")
+        .call()?
+        .into_json()?;
 
-    Ok(res)
+    Ok(response)
 }
 
 pub fn get_text_summary_from_weather(weather: &WeatherData) -> String {

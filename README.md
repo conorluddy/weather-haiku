@@ -13,3 +13,5 @@ Next steps:
 - [ ] See if ChatGPT can be initialised with a template, so we can just send comma separated values to further miminise token count
 - [ ] Make a simple front-end for it
 - [ ] Maybe make an IOS app/widget for it
+
+
