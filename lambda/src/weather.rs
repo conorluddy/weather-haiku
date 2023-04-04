@@ -2,7 +2,7 @@ mod structs;
 use structs::WeatherData;
 use ureq::{get, Error};
 
-pub fn get_current_weather(lat: f32, lon: f32) -> Result<WeatherData, Error> {
+pub fn get_current_weather(lat: String, lon: String) -> Result<WeatherData, Error> {
     let url = format!(
         "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={}&lon={}",
         lat, lon
