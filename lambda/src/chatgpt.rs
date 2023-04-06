@@ -6,7 +6,6 @@ use ureq::{post, Error};
 
 pub fn get_chatgpt_weather_haiku(message: String) -> Result<String, Error> {
     let url = "https://api.openai.com/v1/chat/completions";
-
     let api_key = env::var("CHATGPT_API_KEY").unwrap_or("".to_string());
 
     if api_key.is_empty() {
@@ -17,9 +16,9 @@ pub fn get_chatgpt_weather_haiku(message: String) -> Result<String, Error> {
         model: "gpt-3.5-turbo".to_string(),
         messages: vec![Message {
             role: "user".to_string(),
-            content: format!("haiku from weather forecast: {}", message),
+            content: format!("weather data to haiku , {}", message),
         }],
-        temperature: 0.25,
+        temperature: 0.90,
     };
 
     let response = post(&url)

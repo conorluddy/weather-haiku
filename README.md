@@ -15,3 +15,25 @@ Next steps:
 - [ ] Maybe make an IOS app/widget for it
 
 
+
+## Running
+
+In one terminal
+
+```
+cd lambda
+cargo lambda watch
+```
+
+In another 
+```
+cargo lambda invoke weather_haiku --data-ascii '{ "latitude": "53.34", "longitude": "-6.26" }'
+```
+
+## Deployment
+
+```
+cargo lambda deploy --iam-role arn:aws:iam::XXXXXXXXXXXX:role/your-role-here
+```
+
+
