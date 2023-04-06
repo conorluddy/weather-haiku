@@ -1,4 +1,6 @@
-![Haiku](.github/readme.png)
+![Haiku](.github/preview.png)
+
+Pages: https://conorluddy.github.io/weather-haiku/
 
 Very simple POC, hits the yr.no API for the weather forecast (hard coded to Dublin at the moment), summarises it into a smaller string to save on the tokens that ChatGPT needs to process, and then requests that ChatGPT create a Haiku from it.
 
@@ -7,11 +9,12 @@ With ChatGPT's API you pay by the tokens, basically 'words', both sent and recei
 Next steps:
 - [X] Take params for the coordinates
 - [X] Put it on an AWS Lambda
+- [X] Set up API Gateway to proxy calls to the Lambda
+- [X] Make a simple front-end for it
 - [ ] CI/CD for putting it on AWS
 - [ ] Cache ChatGPT results per timestamp and latlon, in Redis or Dynamo
-- [ ] Optimise the weather data being used
+- [ ] Optimise/minimise the weather data being used
 - [ ] See if ChatGPT can be initialised with a template, so we can just send comma separated values to further miminise token count
-- [ ] Make a simple front-end for it
 - [ ] Maybe make an IOS app/widget for it
 
 
@@ -36,4 +39,8 @@ cargo lambda invoke weather_haiku --data-ascii '{ "latitude": "53.34", "longitud
 cargo lambda deploy --iam-role arn:aws:iam::XXXXXXXXXXXX:role/your-role-here
 ```
 
+
+## Credits
+
+[Codrops](https://tympanus.net/codrops/?p=70337) for the cool UI effect, shamelessly stolen for this. See readme in the frontend directory for more.
 
