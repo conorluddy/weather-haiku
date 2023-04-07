@@ -14,7 +14,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let lon = "-6.26".to_string();
 
     let weather = get_current_weather(lat, lon)?;
+
     let weather_summary = get_text_summary_from_weather(&weather);
+    println!("{}", &weather_summary);
+
+    println!("------------------");
+
     let haiku = get_chatgpt_weather_haiku(weather_summary)?;
 
     println!("{}", haiku);
