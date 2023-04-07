@@ -41,7 +41,7 @@ function errorGetWeather(error) {
 
 function updateHaikuUi(haiku) {
     const haikuContainer = document.querySelector('.haiku')
-    const [line1, line2, line3] = haikuJson.haiku.split('\n')
+    const [line1, line2, line3] = haiku.split('\n')
     haikuContainer.innerHTML = `${line1} <br> ${line2} <br> ${line3}`
 }
 
