@@ -8,7 +8,10 @@ async function getWeather(position) {
     const longitude = position.coords.longitude.toFixed(2)
     const coordContainer = document.querySelector('.coords')
     const textElement = document.querySelector('.content')
+    const subTextElement = document.querySelector('.sub-content')
     const ts = new TypeShuffle(textElement)
+    const ts2 = new TypeShuffle(subTextElement)
+
     try {
         const haikuResponse = await loadHaiku(latitude, longitude)
         const haikuJson = await haikuResponse.json()
@@ -20,6 +23,7 @@ async function getWeather(position) {
         updateWeatherUi(haikuJson.weather)
 
         ts.trigger('fx3')
+        ts2.trigger('fx3')
     } catch (error) {
         const haikuContainer = document.querySelector('.haiku')
         haikuContainer.innerHTML =
@@ -37,9 +41,8 @@ function errorGetWeather(error) {
 
 function updateHaikuUi(haiku) {
     const haikuContainer = document.querySelector('.haiku')
-    const [line1, line2, line3, line4, line5, line6] =
-        haikuJson.haiku.split('\n')
-    haikuContainer.innerHTML = `${line1} <br> ${line2} <br> ${line3} <br> ${line4} <br> ${line5} <br> ${line6}`
+    const [line1, line2, line3] = haikuJson.haiku.split('\n')
+    haikuContainer.innerHTML = `${line1} <br> ${line2} <br> ${line3}`
 }
 
 function updateWeatherUi(weather) {
@@ -49,7 +52,6 @@ function updateWeatherUi(weather) {
     highCloudsContainer = document.querySelector('.highClouds')
     middleCloudsContainer = document.querySelector('.middleClouds')
     lowCloudsContainer = document.querySelector('.lowClouds')
-
     temperatureContainer.innerHTML = `${weather.data.instant.details.air_temperature}°C`
     rainContainer.innerHTML = `${weather.data.next_1_hours.details.precipitation_amount}mm`
     windContainer.innerHTML = `${weather.data.instant.details.wind_speed}m/s ${weather.data.instant.details.wind_from_direction}°`

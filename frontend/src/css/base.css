@@ -189,7 +189,11 @@ main {
     padding: 7vh 2rem 0;
 }
 
-.content .haiku ~ * {
+.sub-content {
+    display: grid;
+    gap: 1rem;
+    max-width: 830px;
+    padding: 7vh 2rem 0;
     opacity: 0.5;
 }
 
@@ -251,6 +255,9 @@ dd {
         justify-content: start;
     }
     .content {
+        grid-template-columns: 15ch 1fr;
+    }
+    .sub-content {
         grid-template-columns: 15ch 1fr;
     }
 }
