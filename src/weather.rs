@@ -1,15 +1,15 @@
 mod structs;
-use structs::WeatherData;
+use structs::{Details, InstantDetails, WeatherData};
 use ureq::{get, Error};
 
 pub fn get_current_weather(lat: f32, lon: f32) -> Result<WeatherData, Error> {
     let url = format!(
-        "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={}&lon={}",
+        "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat={}&lon={}",
         lat, lon
     );
 
     let response: WeatherData = get(&url)
-        .set("USER_AGENT", "weatherpoem/0.1.0")
+        .set("USER_AGENT", "weatherhaiku/0.1.0")
         .call()?
         .into_json()?;
 
@@ -18,92 +18,90 @@ pub fn get_current_weather(lat: f32, lon: f32) -> Result<WeatherData, Error> {
 
 pub fn get_text_summary_from_weather(weather: &WeatherData) -> String {
     let mut summary = String::new();
-    let instant_details = &weather.properties.timeseries[1].data.instant.details;
-    // let next_1h: = &weather.properties.timeseries[1].data.next_1_hours;
-    // let next_6h: = &weather.properties.timeseries[1].data.next_6_hours;
+    let upcoming_weather = &weather.properties.timeseries[3].data;
+    let time = &weather.properties.timeseries[3].time;
+    let coordinates = weather.geometry.coordinates;
 
-    if instant_details.air_pressure_at_sea_level.is_some() {
+    let InstantDetails {
+        air_pressure_at_sea_level,
+        relative_humidity,
+        wind_from_direction,
+        // cloud_area_fraction,
+        cloud_area_fraction_low,
+        cloud_area_fraction_medium,
+        cloud_area_fraction_high,
+        wind_speed,
+        ..
+    } = upcoming_weather.instant.details;
+
+    summary.push_str(&format!(
+        "Location: {}, {}. ",
+        coordinates[0], coordinates[1]
+    ));
+
+    summary.push_str(&format!("{} ", time));
+
+    if air_pressure_at_sea_level.is_some() {
         summary.push_str(&format!(
-            "Air pressure is {} hPa. ",
-            instant_details.air_pressure_at_sea_level.unwrap()
+            "Pressure {}hPa. ",
+            air_pressure_at_sea_level.unwrap()
         ));
     }
 
-    if instant_details.air_temperature.is_some() {
+    if cloud_area_fraction_low.is_some() {
         summary.push_str(&format!(
-            "Air temperature is {} degrees Celsius. ",
-            instant_details.air_temperature.unwrap()
+            "low cloud {}%, ",
+            cloud_area_fraction_low.unwrap()
         ));
     }
 
-    if instant_details.cloud_area_fraction.is_some() {
+    if cloud_area_fraction_medium.is_some() {
         summary.push_str(&format!(
-            "Cloud area fraction is {} percent. ",
-            instant_details.cloud_area_fraction.unwrap()
+            "medium cloud {}%, ",
+            cloud_area_fraction_medium.unwrap()
         ));
     }
 
-    if instant_details.cloud_area_fraction_high.is_some() {
+    if cloud_area_fraction_high.is_some() {
         summary.push_str(&format!(
-            "cloud_area_fraction_high: {}, ",
-            instant_details.cloud_area_fraction_high.unwrap()
-        ))
+            "high cloud {}%, ",
+            cloud_area_fraction_high.unwrap()
+        ));
     }
-    if instant_details.cloud_area_fraction_low.is_some() {
-        summary.push_str(&format!(
-            "cloud_area_fraction_low: {}, ",
-            instant_details.cloud_area_fraction_low.unwrap()
-        ))
+
+    if relative_humidity.is_some() {
+        summary.push_str(&format!("humidity: {}%, ", relative_humidity.unwrap()))
     }
-    if instant_details.cloud_area_fraction_medium.is_some() {
+
+    if wind_speed.is_some() && wind_from_direction.is_some() {
         summary.push_str(&format!(
-            "cloud_area_fraction_medium: {}, ",
-            instant_details.cloud_area_fraction_medium.unwrap()
-        ))
-    }
-    if instant_details.dew_point_temperature.is_some() {
-        summary.push_str(&format!(
-            "dew_point_temperature: {}, ",
-            instant_details.dew_point_temperature.unwrap()
-        ))
-    }
-    if instant_details.fog_area_fraction.is_some() {
-        summary.push_str(&format!(
-            "fog_area_fraction: {}, ",
-            instant_details.fog_area_fraction.unwrap()
-        ))
-    }
-    if instant_details.relative_humidity.is_some() {
-        summary.push_str(&format!(
-            "relative_humidity: {}, ",
-            instant_details.relative_humidity.unwrap()
-        ))
-    }
-    if instant_details.wind_from_direction.is_some() {
-        summary.push_str(&format!(
-            "wind_from_direction: {}, ",
-            instant_details.wind_from_direction.unwrap()
-        ))
-    }
-    if instant_details.wind_speed.is_some() {
-        summary.push_str(&format!(
-            "wind_speed: {}, ",
-            instant_details.wind_speed.unwrap()
-        ))
-    }
-    if instant_details.wind_speed_of_gust.is_some() {
-        summary.push_str(&format!(
-            "wind_speed_of_gust: {}, ",
-            instant_details.wind_speed_of_gust.unwrap()
+            "wind: {}deg {}m/s. ",
+            wind_from_direction.unwrap(),
+            wind_speed.unwrap(),
         ))
     }
 
-    // if next_1_hours.details.is_some() {
-    //     summary.push_str(&format!(
-    //         "wind_speed_of_gust: {}, ",
-    //         instant_details.wind_speed_of_gust.unwrap()
-    //     ))
-    // }
+    upcoming_weather.next_6_hours.as_ref().map(|next_6_hours| {
+        next_6_hours.details.as_ref().map(|details| {
+            // TODO: Understand ^^^ this as_ref().map
+            let Details {
+                air_temperature_max,
+                air_temperature_min,
+                precipitation_amount,
+                ..
+            } = details;
+            if air_temperature_min.is_some() {
+                summary.push_str(&format!("temp min {}C, ", air_temperature_min.unwrap()));
+            }
+            if air_temperature_max.is_some() {
+                summary.push_str(&format!("temp max {}C, ", air_temperature_max.unwrap()));
+            }
+            if precipitation_amount.is_some() {
+                summary.push_str(&format!("rain {}mm", precipitation_amount.unwrap()));
+            }
+        })
+    });
 
+    println!("summary: {}", summary);
     summary
 }
