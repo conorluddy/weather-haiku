@@ -1,4 +1,4 @@
-mod structs;
+pub mod structs;
 use structs::{Details, InstantDetails, WeatherData};
 use ureq::{get, Error};
 
@@ -26,7 +26,6 @@ pub fn get_text_summary_from_weather(weather: &WeatherData) -> String {
         air_pressure_at_sea_level,
         relative_humidity,
         wind_from_direction,
-        // cloud_area_fraction,
         cloud_area_fraction_low,
         cloud_area_fraction_medium,
         cloud_area_fraction_high,
@@ -102,6 +101,5 @@ pub fn get_text_summary_from_weather(weather: &WeatherData) -> String {
         })
     });
 
-    println!("summary: {}", summary);
     summary
 }
