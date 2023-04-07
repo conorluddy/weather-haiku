@@ -1,9 +1,12 @@
 [package]
-name = "weatherhaiku"
+name = "weather_haiku"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "weather_haiku"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
