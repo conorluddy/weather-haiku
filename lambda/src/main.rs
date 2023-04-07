@@ -4,6 +4,7 @@ use dotenv::dotenv;
 use lambda_runtime::{service_fn, Error, LambdaEvent};
 use serde::{Deserialize, Serialize};
 use weather_haiku::chatgpt::get_chatgpt_weather_haiku;
+use weather_haiku::weather::structs::Timeseries;
 use weather_haiku::weather::{get_current_weather, get_text_summary_from_weather};
 
 /// This is also a made-up example. Requests come into the runtime as unicode
@@ -23,6 +24,7 @@ struct Request {
 struct Response {
     request_id: String,
     haiku: String,
+    weather: Option<Timeseries>,
 }
 
 #[tokio::main]
@@ -57,35 +59,13 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
     let weather_summary = get_text_summary_from_weather(&weather);
     let haiku = get_chatgpt_weather_haiku(weather_summary)?;
 
+    let weather_data_for_response = weather.properties.timeseries.get(3).cloned();
+
     let resp = Response {
         request_id: event.context.request_id,
         haiku: format!("{}", haiku),
+        weather: weather_data_for_response,
     };
 
-    // return `Response` (it will be serialized to JSON automatically by the runtime)
     Ok(resp)
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use crate::{my_handler, Request};
-//     use lambda_runtime::{Context, LambdaEvent};
-
-//     #[tokio::test]
-//     async fn response_is_good_for_simple_input() {
-//         let id = "ID";
-
-//         let mut context = Context::default();
-//         context.request_id = id.to_string();
-
-//         let payload = Request {
-//             command: "X".to_string(),
-//         };
-//         let event = LambdaEvent { payload, context };
-
-//         let result = my_handler(event).await.unwrap();
-
-//         assert_eq!(result.msg, "Command X executed.");
-//         assert_eq!(result.req_id, id.to_string());
-//     }
-// }
