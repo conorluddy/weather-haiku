@@ -1,35 +1,34 @@
-import { loadHaiku } from './utils';
-import { TypeShuffle } from './typeShuffle';
+import { loadHaiku } from './utils'
+import { TypeShuffle } from './typeShuffle'
 
-navigator.geolocation.getCurrentPosition(getWeather)
+navigator.geolocation.getCurrentPosition(getWeather, errorGetWeather)
 
-function getWeather(position) {
-    const latitude = position.coords.latitude.toFixed(2);
-    const longitude = position.coords.longitude.toFixed(2);
+async function getWeather(position) {
+    const latitude = position.coords.latitude.toFixed(2)
+    const longitude = position.coords.longitude.toFixed(2)
+    const coordContainer = document.querySelector('.coords')
+    const haikuContainer = document.querySelector('.haiku')
+    const textElement = document.querySelector('.content')
+    const ts = new TypeShuffle(textElement)
+    try {
+        const haikuResponse = await loadHaiku(latitude, longitude)
+        const haikuJson = await haikuResponse.json()
+        const [line1, line2, line3] = haikuJson.haiku.split('\n')
+        document.body.classList.remove('loading')
+        coordContainer.innerHTML = `${latitude}, ${longitude}`
+        haikuContainer.innerHTML = `${line1} <br> ${line2} <br> ${line3}`
+        ts.trigger('fx3')
+    } catch (error) {
+        const haikuContainer = document.querySelector('.haiku')
+        haikuContainer.innerHTML =
+            "Error getting weather, probably don't have permission to get your location."
+        console.error(error)
+    }
+}
 
-    loadHaiku(latitude, longitude).then(res => res.json()).then(response => {
-
-        const [line1, line2, line3] = response.haiku.split('\n');
-
-        document.body.classList.remove('loading');
-        
-        const coordContainer = document.querySelector('.coords');
-        const haikuContainer = document.querySelector('.haiku');
-
-        coordContainer.innerHTML = `${latitude}, ${longitude}`;
-        haikuContainer.innerHTML = `${line1} <br> ${line2} <br> ${line3}`;
-        
-        const textElement = document.querySelector('.content');
-        
-        const ts = new TypeShuffle(textElement);
-        
-        ts.trigger('fx1');
-
-        [...document.querySelectorAll('.effects > button')].forEach(button => {
-            button.addEventListener('click', () => {
-                ts.trigger(`fx${button.dataset.fx}`);
-            });
-        });
-
-    });
+function errorGetWeather(error) {
+    const haikuContainer = document.querySelector('.haiku')
+    haikuContainer.innerHTML =
+        "Error getting weather, probably don't have permission to get your location."
+    console.error(error)
 }
