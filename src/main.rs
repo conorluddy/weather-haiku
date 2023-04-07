@@ -9,8 +9,9 @@ use weather::{get_current_weather, get_text_summary_from_weather};
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
-    let lat = 53.34;
-    let lon = -6.26;
+    // Hardcoded to Dublin for now (lambda will use the location from the event)
+    let lat = "53.34".to_string();
+    let lon = "-6.26".to_string();
 
     let weather = get_current_weather(lat, lon)?;
     let weather_summary = get_text_summary_from_weather(&weather);

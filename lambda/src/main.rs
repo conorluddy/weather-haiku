@@ -1,11 +1,10 @@
-mod chatgpt;
-mod weather;
+extern crate weather_haiku;
 
-use chatgpt::get_chatgpt_weather_haiku;
 use dotenv::dotenv;
 use lambda_runtime::{service_fn, Error, LambdaEvent};
 use serde::{Deserialize, Serialize};
-use weather::{get_current_weather, get_text_summary_from_weather};
+use weather_haiku::chatgpt::get_chatgpt_weather_haiku;
+use weather_haiku::weather::{get_current_weather, get_text_summary_from_weather};
 
 /// This is also a made-up example. Requests come into the runtime as unicode
 /// strings in json format, which can map to any structure that implements `serde::Deserialize`

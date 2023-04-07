@@ -962,6 +962,17 @@ name = "weather_haiku"
 version = "0.1.0"
 dependencies = [
  "dotenv",
+ "serde",
+ "serde_json",
+ "tokio",
+ "ureq",
+]
+
+[[package]]
+name = "weather_haiku_lambda"
+version = "0.1.0"
+dependencies = [
+ "dotenv",
  "lambda_http",
  "lambda_runtime",
  "serde",
@@ -970,6 +981,7 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "ureq",
+ "weather_haiku",
 ]
 
 [[package]]
