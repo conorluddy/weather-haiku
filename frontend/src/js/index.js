@@ -7,16 +7,18 @@ async function getWeather(position) {
     const latitude = position.coords.latitude.toFixed(2)
     const longitude = position.coords.longitude.toFixed(2)
     const coordContainer = document.querySelector('.coords')
-    const haikuContainer = document.querySelector('.haiku')
     const textElement = document.querySelector('.content')
     const ts = new TypeShuffle(textElement)
     try {
         const haikuResponse = await loadHaiku(latitude, longitude)
         const haikuJson = await haikuResponse.json()
-        const [line1, line2, line3] = haikuJson.haiku.split('\n')
+
         document.body.classList.remove('loading')
         coordContainer.innerHTML = `${latitude}, ${longitude}`
-        haikuContainer.innerHTML = `${line1} <br> ${line2} <br> ${line3}`
+
+        updateHaikuUi(haikuJson.haiku)
+        updateWeatherUi(haikuJson.weather)
+
         ts.trigger('fx3')
     } catch (error) {
         const haikuContainer = document.querySelector('.haiku')
@@ -31,4 +33,27 @@ function errorGetWeather(error) {
     haikuContainer.innerHTML =
         "Error getting weather, probably don't have permission to get your location."
     console.error(error)
+}
+
+function updateHaikuUi(haiku) {
+    const haikuContainer = document.querySelector('.haiku')
+    const [line1, line2, line3, line4, line5, line6] =
+        haikuJson.haiku.split('\n')
+    haikuContainer.innerHTML = `${line1} <br> ${line2} <br> ${line3} <br> ${line4} <br> ${line5} <br> ${line6}`
+}
+
+function updateWeatherUi(weather) {
+    temperatureContainer = document.querySelector('.temperature')
+    speedContainer = document.querySelector('.speed')
+    windContainer = document.querySelector('.wind')
+    highCloudsContainer = document.querySelector('.highClouds')
+    middleCloudsContainer = document.querySelector('.middleClouds')
+    lowCloudsContainer = document.querySelector('.lowClouds')
+
+    temperatureContainer.innerHTML = `${weather.data.instant.details.air_temperature}°C`
+    rainContainer.innerHTML = `${weather.data.next_1_hours.details.precipitation_amount}mm`
+    windContainer.innerHTML = `${weather.data.instant.details.wind_speed}m/s ${weather.data.instant.details.wind_from_direction}°`
+    highCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_high}%`
+    middleCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_medium}%`
+    lowCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_low}%`
 }
