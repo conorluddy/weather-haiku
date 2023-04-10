@@ -9,8 +9,6 @@ async function getWeather(position) {
     const coordContainer = document.querySelector('.coords')
     const textElement = document.querySelector('.content')
     const subTextElement = document.querySelector('.sub-content')
-    const ts = new TypeShuffle(textElement)
-    const ts2 = new TypeShuffle(subTextElement)
 
     try {
         const haikuResponse = await loadHaiku(latitude, longitude)
@@ -21,12 +19,14 @@ async function getWeather(position) {
         updateHaikuUi(haiku)
         updateWeatherUi(weather)
 
-        ts.trigger('fx3')
-        ts2.trigger('fx3')
+        const ts = new TypeShuffle(textElement)
+        const ts2 = new TypeShuffle(subTextElement)
+        ts.trigger('fx1')
+        ts2.trigger('fx1')
     } catch (error) {
         const haikuContainer = document.querySelector('.haiku')
         haikuContainer.innerHTML =
-            "Error getting weather, probably don't have permission to get your location."
+            'Error getting weather, might not have permission to get your location.'
         console.error(error)
     }
 }
@@ -34,7 +34,7 @@ async function getWeather(position) {
 function errorGetWeather(error) {
     const haikuContainer = document.querySelector('.haiku')
     haikuContainer.innerHTML =
-        "Error getting weather, probably don't have permission to get your location."
+        'Error getting weather, might not have permission to get your location.'
     console.error(error)
 }
 
@@ -45,12 +45,12 @@ function updateHaikuUi(haiku) {
 }
 
 function updateWeatherUi(weather) {
-    temperatureContainer = document.querySelector('.temperature')
-    speedContainer = document.querySelector('.speed')
-    windContainer = document.querySelector('.wind')
-    highCloudsContainer = document.querySelector('.highClouds')
-    middleCloudsContainer = document.querySelector('.middleClouds')
-    lowCloudsContainer = document.querySelector('.lowClouds')
+    const temperatureContainer = document.querySelector('.temperature')
+    const rainContainer = document.querySelector('.rain')
+    const windContainer = document.querySelector('.wind')
+    const highCloudsContainer = document.querySelector('.highClouds')
+    const middleCloudsContainer = document.querySelector('.middleClouds')
+    const lowCloudsContainer = document.querySelector('.lowClouds')
     temperatureContainer.innerHTML = `${weather.data.instant.details.air_temperature}°C`
     rainContainer.innerHTML = `${weather.data.next_1_hours.details.precipitation_amount}mm`
     windContainer.innerHTML = `${weather.data.instant.details.wind_speed}m/s ${weather.data.instant.details.wind_from_direction}°`
