@@ -14,13 +14,12 @@ async function getWeather(position) {
 
     try {
         const haikuResponse = await loadHaiku(latitude, longitude)
-        const haikuJson = await haikuResponse.json()
-
+        const { haiku, weather } = await haikuResponse.json()
         document.body.classList.remove('loading')
         coordContainer.innerHTML = `${latitude}, ${longitude}`
 
-        updateHaikuUi(haikuJson.haiku)
-        updateWeatherUi(haikuJson.weather)
+        updateHaikuUi(haiku)
+        updateWeatherUi(weather)
 
         ts.trigger('fx3')
         ts2.trigger('fx3')
