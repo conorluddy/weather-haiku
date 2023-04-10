@@ -186,14 +186,14 @@ main {
     display: grid;
     gap: 1rem;
     max-width: 830px;
-    padding: 7vh 2rem 0;
+    padding: 3rem 2rem 0;
 }
 
 .sub-content {
     display: grid;
     gap: 1rem;
     max-width: 830px;
-    padding: 7vh 2rem 0;
+    padding: 3rem 2rem 0;
     opacity: 0.5;
 }
 
