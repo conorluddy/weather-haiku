@@ -1,6 +1,6 @@
 ## weather_haiku_lambda Rust module
 
-This is Rust package which imports the modules from the parent package.
+This is a Rust package which imports the modules from the parent package.
 
 It uses `cargo lambda` to create a serverless function for AWS Lambda.
 
