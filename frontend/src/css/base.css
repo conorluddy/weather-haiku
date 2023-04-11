@@ -16,11 +16,10 @@ body {
     margin: 0;
     color: var(--color-text);
     background-color: var(--color-bg);
-    font-family: ballinger-mono, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
-        sans-serif;
+    font-family: 'Syne Mono', monospace;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 }
 
 /* Page Loader */
@@ -184,16 +183,16 @@ main {
 
 .content {
     display: grid;
-    gap: 1rem;
+    gap: 0.5rem;
     max-width: 830px;
-    padding: 3rem 2rem 0;
+    padding: 2rem 2rem 0;
 }
 
 .sub-content {
     display: grid;
-    gap: 1rem;
+    gap: 0.5rem;
     max-width: 830px;
-    padding: 3rem 2rem 0;
+    padding: 2rem 2rem 0;
     opacity: 0.5;
 }
 

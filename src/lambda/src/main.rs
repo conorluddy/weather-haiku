@@ -29,6 +29,8 @@ struct Response {
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    dotenv().ok();
+
     // required to enable CloudWatch error logging by the runtime
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::INFO)
@@ -47,7 +49,6 @@ async fn main() -> Result<(), Error> {
 }
 
 pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
-    dotenv().ok();
     let latitude = event.payload.latitude;
     let longitude = event.payload.longitude;
 
@@ -58,7 +59,6 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
     let weather = get_current_weather(latitude, longitude)?;
     let weather_summary = get_text_summary_from_weather(&weather);
     let haiku = get_chatgpt_weather_haiku(weather_summary)?;
-
     let weather_data_for_response = weather.properties.timeseries.get(3).cloned();
 
     let resp = Response {
