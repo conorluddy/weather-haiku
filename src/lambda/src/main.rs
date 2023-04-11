@@ -47,15 +47,42 @@ async fn main() -> Result<(), Error> {
         .without_time()
         .init();
 
-    let func = service_fn(my_handler);
+    let func = service_fn(lambda_handler);
     lambda_runtime::run(func).await?;
     Ok(())
 }
 
-pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
+pub(crate) async fn lambda_handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
     let latitude_str = event.payload.latitude;
     let longitude_str = event.payload.longitude;
+    let (latitude, longitude) = sanitise_latitudes_and_longitudes(&latitude_str, &longitude_str);
+    let timestamp_hour = generate_timestamp_hour();
 
+    // Weather API is free as long as you use it fairly, so we can just call it every time
+    let weather = get_current_weather(latitude, longitude)?;
+    let weather_summary = get_text_summary_from_weather(&weather);
+    let weather_data_for_response = weather.properties.timeseries.get(3).cloned();
+
+    let cached_haiku = get_cached_haiku(latitude, longitude, &timestamp_hour).await;
+    let haiku = match cached_haiku {
+        Some(haiku) => haiku,
+        None => {
+            let haiku = get_chatgpt_weather_haiku(weather_summary)?;
+            set_cached_haiku(latitude, longitude, timestamp_hour, &haiku).await;
+            haiku
+        }
+    };
+
+    let resp = Response {
+        request_id: event.context.request_id,
+        haiku: format!("{}", haiku),
+        weather: weather_data_for_response,
+    };
+
+    Ok(resp)
+}
+
+fn sanitise_latitudes_and_longitudes(latitude_str: &str, longitude_str: &str) -> (f32, f32) {
     let latitude_unrounded = match latitude_str.parse::<f32>() {
         Ok(val) => val,
         Err(_) => panic!("Latitude must be a decimal number"),
@@ -74,29 +101,35 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
         panic!("Longitude must be between -180 and 180 degrees");
     }
 
+    let latitude = (latitude_unrounded * 10.0).round() / 10.0;
+    let longitude = (longitude_unrounded * 10.0).round() / 10.0;
+
+    (latitude, longitude)
+}
+
+fn generate_timestamp_hour() -> String {
     let now: DateTime<Utc> = Utc::now();
-    let timestamp_hour = format!(
+    format!(
         "{:04}-{:02}-{:02}T{:02}:00:00",
         now.year(),
         now.month(),
         now.day(),
         now.hour()
-    );
+    )
+}
 
+async fn get_cached_haiku(
+    latitude: f32,
+    longitude: f32,
+    timestamp_hour: &String,
+) -> Option<String> {
     let client = DynamoDbClient::new(Region::default());
 
-    let latitude = (latitude_unrounded * 10.0).round() / 10.0;
-    let longitude = (longitude_unrounded * 10.0).round() / 10.0;
-
-    let weather = get_current_weather(latitude, longitude)?;
-    let weather_summary = get_text_summary_from_weather(&weather);
-
-    //////// Define the key condition expression for the query
-
-    // let key_condition_expression = String::from("lat_lon = :lat_lon_val");
+    // Create a QueryInput struct with the table name and the key condition expression
     let key_condition_expression =
         String::from("lat_lon = :lat_lon_val and timestamp_hour = :timestamp_hour_val");
 
+    // Create a HashMap to hold the values for the expression attribute
     let mut expression_attribute_values = HashMap::new();
 
     expression_attribute_values.insert(
@@ -128,25 +161,24 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
             if let Some(items) = output.items {
                 if items.len() > 0 {
                     let first = items[0].clone();
-
-                    // If the query returns any items, return the haiku from the first item
                     let haiku = first["haiku"].clone().s.unwrap();
-                    println!("DynamoDB haiku: {}", haiku);
-
-                    let weather_data_for_response = weather.properties.timeseries.get(3).cloned();
-                    let resp = Response {
-                        request_id: event.context.request_id,
-                        haiku: format!("{}", haiku),
-                        weather: weather_data_for_response,
-                    };
-                    return Ok(resp);
+                    Some(haiku)
+                } else {
+                    None
                 }
+            } else {
+                None
             }
         }
-        Err(e) => println!("Error querying DynamoDB: {:?}", e),
+        Err(e) => {
+            println!("Error querying DynamoDB: {:?}", e);
+            None
+        }
     }
+}
 
-    let haiku = get_chatgpt_weather_haiku(weather_summary)?;
+async fn set_cached_haiku(latitude: f32, longitude: f32, timestamp_hour: String, haiku: &String) {
+    let client = DynamoDbClient::new(Region::default());
 
     let item = CacheItem {
         lat_lon: format!("{},{}", latitude, longitude),
@@ -190,14 +222,4 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
         Ok(_) => println!("Successfully put item into DynamoDB"),
         Err(e) => println!("Error putting item into DynamoDB: {:?}", e),
     }
-
-    let weather_data_for_response = weather.properties.timeseries.get(3).cloned();
-
-    let resp = Response {
-        request_id: event.context.request_id,
-        haiku: format!("{}", haiku),
-        weather: weather_data_for_response,
-    };
-
-    Ok(resp)
 }
