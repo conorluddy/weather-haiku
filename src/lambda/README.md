@@ -10,13 +10,17 @@ Build
 `cargo lambda build --output-format zip`
 
 Watch - build locally and listen for requests
+
 `cargo lambda watch`
 
 Invoke: While watching you can invoke
+
 `cargo lambda invoke weather_haiku_lambda --data-ascii '{ "latitude": "53.34", "longitude": "-6.26" }' `
 
 Invoke remote: If you've deployed it to AWS you can invoke the deployed version
+
 `cargo lambda invoke weather_haiku_lambda --data-ascii '{ "latitude": "53.34", "longitude": "-6.26" }' --remote`
 
 Deployment
+
 `cargo lambda deploy --iam-role arn:aws:iam::XXXXXXXXXXXX:role/lambda-manager-name`
