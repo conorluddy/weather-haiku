@@ -1,18 +1,17 @@
 extern crate weather_haiku;
 
-use std::collections::HashMap;
-
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Datelike, Timelike, Utc};
 use dotenv::dotenv;
 use lambda_runtime::{service_fn, Error, LambdaEvent};
 use rusoto_core::Region;
 use rusoto_dynamodb::{AttributeValue, DynamoDb, DynamoDbClient, PutItemInput, QueryInput};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use weather_haiku::chatgpt::get_chatgpt_weather_haiku;
 use weather_haiku::weather::structs::Timeseries;
 use weather_haiku::weather::{get_current_weather, get_text_summary_from_weather};
 
-const TABLE_NAME: &str = "haiku_cache";
+const TABLE_NAME: &str = "weather_haiku_cache";
 
 #[derive(Deserialize)]
 struct Request {
@@ -30,7 +29,7 @@ struct Response {
 #[derive(Serialize, Deserialize)]
 struct CacheItem {
     lat_lon: String,
-    timestamp_utc: String,
+    timestamp_hour: String,
     haiku: String,
 }
 
@@ -75,7 +74,15 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
         panic!("Longitude must be between -180 and 180 degrees");
     }
 
-    let timestamp_utc = Utc::now().to_rfc3339();
+    let now: DateTime<Utc> = Utc::now();
+    let timestamp_hour = format!(
+        "{:04}-{:02}-{:02}T{:02}:00:00",
+        now.year(),
+        now.month(),
+        now.day(),
+        now.hour()
+    );
+
     let client = DynamoDbClient::new(Region::default());
 
     let latitude = (latitude_unrounded * 10.0).round() / 10.0;
@@ -86,8 +93,9 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
 
     //////// Define the key condition expression for the query
 
-    let key_condition_expression = String::from("lat_lon = :lat_lon_val");
-    // String::from("lat_lon = :lat_lon_val and timestamp_utc = :timestamp_utc_val");
+    // let key_condition_expression = String::from("lat_lon = :lat_lon_val");
+    let key_condition_expression =
+        String::from("lat_lon = :lat_lon_val and timestamp_hour = :timestamp_hour_val");
 
     let mut expression_attribute_values = HashMap::new();
 
@@ -98,13 +106,14 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
             ..Default::default()
         },
     );
-    // expression_attribute_values.insert(
-    //     String::from(":timestamp_utc_val"),
-    //     AttributeValue {
-    //         s: Some(timestamp_utc.to_owned()),
-    //         ..Default::default()
-    //     },
-    // );
+
+    expression_attribute_values.insert(
+        String::from(":timestamp_hour_val"),
+        AttributeValue {
+            s: Some(timestamp_hour.to_owned()),
+            ..Default::default()
+        },
+    );
 
     let query_input = QueryInput {
         table_name: TABLE_NAME.to_owned(),
@@ -141,7 +150,7 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
 
     let item = CacheItem {
         lat_lon: format!("{},{}", latitude, longitude),
-        timestamp_utc: timestamp_utc.to_owned(),
+        timestamp_hour: timestamp_hour.to_owned(),
         haiku: haiku.to_owned(),
     };
 
@@ -155,9 +164,9 @@ pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, 
         },
     );
     item_values.insert(
-        String::from("timestamp_utc"),
+        String::from("timestamp_hour"),
         AttributeValue {
-            s: Some(item.timestamp_utc),
+            s: Some(item.timestamp_hour),
             ..Default::default()
         },
     );
