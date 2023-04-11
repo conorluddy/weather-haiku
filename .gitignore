@@ -1,5 +1,5 @@
-/target
 .env
-node_modules
 .parcel_cache
-./frontend/.parcel_cache
+node_modules
+frontend/.parcel_cache
+/target

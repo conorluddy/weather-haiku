@@ -18,15 +18,11 @@ async function getWeather(position) {
 
         updateHaikuUi(haiku)
         updateWeatherUi(weather)
-
-        const ts = new TypeShuffle(textElement)
-        const ts2 = new TypeShuffle(subTextElement)
-        ts.trigger('fx1')
-        ts2.trigger('fx1')
+        new TypeShuffle(textElement).trigger('fx1')
+        new TypeShuffle(subTextElement).trigger('fx1')
     } catch (error) {
         const haikuContainer = document.querySelector('.haiku')
-        haikuContainer.innerHTML =
-            'Error getting weather, might not have permission to get your location.'
+        haikuContainer.innerHTML = 'Error getting weather...'
         console.error(error)
     }
 }
@@ -34,7 +30,7 @@ async function getWeather(position) {
 function errorGetWeather(error) {
     const haikuContainer = document.querySelector('.haiku')
     haikuContainer.innerHTML =
-        'Error getting weather, might not have permission to get your location.'
+        'Error getting weather. App doesnt have permission to get location.'
     console.error(error)
 }
 
