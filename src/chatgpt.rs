@@ -16,7 +16,7 @@ pub fn get_chatgpt_weather_haiku(message: String) -> Result<String, Error> {
         model: "gpt-4".to_string(),
         messages: vec![Message {
             role: "user".to_string(),
-            content: format!("{} | weather double-haiku", message),
+            content: format!("{} | weather Cinquain", message),
         }],
         temperature: 0.75,
     };
