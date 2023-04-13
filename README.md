@@ -8,17 +8,15 @@ With ChatGPT's API you pay by the tokens, basically 'words', both sent and recei
 
 Next steps:
 
-- [X] Take params for the coordinates
-- [X] Put it on an AWS Lambda
-- [X] Set up API Gateway to proxy calls to the Lambda
-- [X] Make a simple front-end for it
-- [X] Optimise/minimise the weather data being used
-- [X] Cache ChatGPT results per hour x latlon in DynamoDB
-- [ ] CI/CD for putting it on AWS
-- [ ] See if ChatGPT can be initialised with a template, so we can just send comma separated values to further miminise token count
-- [ ] Maybe make an IOS app/widget for it
-
-
+-   [x] Take params for the coordinates
+-   [x] Put it on an AWS Lambda
+-   [x] Set up API Gateway to proxy calls to the Lambda
+-   [x] Make a simple front-end for it
+-   [x] Optimise/minimise the weather data being used
+-   [x] Cache ChatGPT results per hour x latlon in DynamoDB
+-   [ ] CI/CD for putting it on AWS
+-   [ ] See if ChatGPT can be initialised with a template, so we can just send comma separated values to further miminise token count
+-   [ ] Maybe make an IOS app/widget for it
 
 ## Running
 
@@ -29,20 +27,24 @@ cd lambda
 cargo lambda watch
 ```
 
-In another 
+In another
+
 ```
 cargo lambda invoke weather_haiku --data-ascii '{ "latitude": "53.34", "longitude": "-6.26" }'
 ```
 
+## Build
 
-## Deployment
+```
+cargo lambda build --release --arm64 --output-format zip
+```
+
+## Deploy
 
 ```
 cargo lambda deploy --iam-role arn:aws:iam::XXXXXXXXXXXX:role/your-role-here
 ```
 
-
 ## Credits
 
 [Codrops](https://tympanus.net/codrops/?p=70337) for the cool UI effect, shamelessly stolen for this. See readme in the frontend directory for more.
-

@@ -11,15 +11,14 @@ async function getWeather(position) {
     // const subTextElement = document.querySelector('.sub-content')
 
     try {
-        // const haikuResponse = await loadHaiku(latitude, longitude)
-        const { haiku, weather } = dummyData //await haikuResponse.json()
+        const haikuResponse = await loadHaiku(latitude, longitude)
+        const { haiku, weather } = await haikuResponse.json()
         document.body.classList.remove('loading')
         coordContainer.innerHTML = `${latitude}, ${longitude}`
 
         updateHaikuUi(haiku)
         updateWeatherUi(weather)
         new TypeShuffle(textElement).trigger('fx1')
-        // new TypeShuffle(subTextElement).trigger('fx1')
     } catch (error) {
         const haikuContainer = document.querySelector('.haiku')
         haikuContainer.innerHTML = 'Error getting weather...'
@@ -61,60 +60,4 @@ function updateWeatherUi(weather) {
     highCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_high}%`
     middleCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_medium}%`
     lowCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_low}%`
-}
-
-const dummyData = {
-    request_id: 'bfe11d19-ea80-4682-ba11-38cd2d62c113',
-    haiku: 'Low clouds gather near,\nMedium layers stretch above,\nHigh clouds disappear.\n\nChilly winds blow strong,\nRain refrains from joining in,\nHumidity clings.',
-    weather: {
-        data: {
-            instant: {
-                details: {
-                    air_pressure_at_sea_level: 994.8,
-                    air_temperature: 6.2,
-                    cloud_area_fraction: 18.0,
-                    cloud_area_fraction_high: 0.0,
-                    cloud_area_fraction_low: 16.4,
-                    cloud_area_fraction_medium: 5.5,
-                    dew_point_temperature: 3.5,
-                    fog_area_fraction: 0.0,
-                    relative_humidity: 82.8,
-                    wind_from_direction: 277.5,
-                    wind_speed: 9.7,
-                    wind_speed_of_gust: null,
-                },
-            },
-            next_1_hours: {
-                summary: { symbol_code: 'fair_night' },
-                details: {
-                    air_temperature_max: null,
-                    air_temperature_min: null,
-                    precipitation_amount: 0.0,
-                    precipitation_amount_max: null,
-                    precipitation_amount_min: null,
-                    probability_of_precipitation: null,
-                    probability_of_thunder: null,
-                    ultraviolet_index_clear_sky_max: null,
-                },
-            },
-            next_6_hours: {
-                summary: { symbol_code: 'fair_night' },
-                details: {
-                    air_temperature_max: 5.9,
-                    air_temperature_min: 4.6,
-                    precipitation_amount: 0.0,
-                    precipitation_amount_max: null,
-                    precipitation_amount_min: null,
-                    probability_of_precipitation: null,
-                    probability_of_thunder: null,
-                    ultraviolet_index_clear_sky_max: null,
-                },
-            },
-            next_12_hours: {
-                summary: { symbol_code: 'fair_day' },
-                details: null,
-            },
-        },
-        time: '2023-04-12T21:00:00Z',
-    },
 }
