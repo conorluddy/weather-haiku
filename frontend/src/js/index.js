@@ -1,4 +1,4 @@
-// import { loadHaiku } from './utils'
+import { loadHaiku } from './utils'
 import { TypeShuffle } from './typeShuffle'
 
 navigator.geolocation.getCurrentPosition(getWeather, errorGetWeather)
