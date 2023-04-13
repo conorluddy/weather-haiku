@@ -10,8 +10,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
     // Hardcoded to Dublin for now (lambda will use the location from the event)
-    let lat = "53.34".to_string();
-    let lon = "-6.26".to_string();
+    let lat = 53.34;
+    let lon = -6.26;
 
     let weather = get_current_weather(lat, lon)?;
 

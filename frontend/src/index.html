@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,34 +10,48 @@
         <link rel="stylesheet" type="text/css" href="css/base.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <!-- TODO: Strip this back to just the fonts we need -->
         <link
-            href="https://fonts.googleapis.com/css2?family=Syne+Mono&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100;400&display=swap"
             rel="stylesheet"
         />
     </head>
 
-    <body class="">
-        <main>
-            <dl class="content">
-                <dt>Location</dt>
-                <dd class="coords">Getting weather...</dd>
-                <dt>Next 2 hours:</dt>
-                <dd class="haiku"></dd>
-            </dl>
-            <dl class="sub-content">
-                <dt>Temperature</dt>
-                <dd class="temperature"></dd>
-                <dt>Rain</dt>
-                <dd class="rain"></dd>
-                <dt>Wind</dt>
-                <dd class="wind"></dd>
-                <dt>High clouds</dt>
-                <dd class="highClouds"></dd>
-                <dt>Middle clouds</dt>
-                <dd class="middleClouds"></dd>
-                <dt>Low clouds</dt>
-                <dd class="lowClouds"></dd>
-            </dl>
+    <body class="loading">
+        <main class="content">
+            <div class="haiku"></div>
+
+            <div class="coords">Getting weather...</div>
+
+            <div class="stats temperature">
+                <span>Temperature</span>
+                <span></span>
+            </div>
+            <div class="stats rain">
+                <span>Rain</span>
+                <span></span>
+            </div>
+            <div class="stats wind">
+                <span>Wind</span>
+                <span></span>
+            </div>
+            <div class="stats high-clouds">
+                <span>High clouds</span>
+                <span></span>
+            </div>
+            <div class="stats middle-clouds">
+                <span>Middle clouds</span>
+                <span></span>
+            </div>
+            <div class="stats low-clouds">
+                <span>Low clouds</span>
+                <span></span>
+            </div>
+            <small class="wip">
+                <span>Better UI coming soon</span>
+            </div>
+            
         </main>
         <script type="module" src="js/index.js"></script>
     </body>
