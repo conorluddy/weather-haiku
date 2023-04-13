@@ -2,9 +2,11 @@
 
 Pages: https://conorluddy.github.io/weather-haiku/
 
-Very simple POC, hits the yr.no API for the weather forecast, summarises it into a smaller string to save on the tokens that ChatGPT needs to process, and then requests that ChatGPT create a Haiku from it.
+Very simple POC, hits the yr.no API for the weather forecast, summarises it into a smaller string to minimise tokens that ChatGPT needs to process, and then requests that ChatGPT create a Haiku from it.
 
 With ChatGPT's API you pay by the tokens, basically 'words', both sent and received, so while we could ask for the weather forecast as a short fairytale, a Haiku is at least short and sweet.
+
+ChatGPT is spendy, so I'm caching these haiku in AWS DynamoDB based on coordinates and the hour. If one has been generated already for your coordinates (to one decimal place) and for the given hour, then it will be fetched from DynamoDB instead of regenerating from ChatGPT. 
 
 Next steps:
 
