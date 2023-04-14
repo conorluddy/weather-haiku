@@ -27,10 +27,8 @@ navigator.geolocation.getCurrentPosition(
         const loadingSpinner = document.querySelector('loading-spinner')
 
         try {
-            const { haiku, weather } = (
-                await loadHaiku(latitude, longitude)
-            ).json()
-
+            const res = await loadHaiku(latitude, longitude)
+            const { haiku, weather } = res.json()
             coordContainer.innerHTML = `${latitude}, ${longitude}`
             updateHaikuUi(haiku)
             updateWeatherUi(weather)
@@ -51,7 +49,7 @@ navigator.geolocation.getCurrentPosition(
 // TODO: move into HaikuText component?
 function updateHaikuUi(haiku) {
     const haikuContainer = document.querySelector('haiku-text')
-    const haikuWithBreaks = haiku.replaceAll('\n', '<br />')
+    const haikuWithBreaks = haiku ? haiku.replaceAll('\n', '<br />') : ''
     haikuContainer.innerHTML = haikuWithBreaks
 }
 
