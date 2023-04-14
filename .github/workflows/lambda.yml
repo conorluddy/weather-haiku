@@ -24,11 +24,8 @@ jobs:
                   platform: linux # Other valid options: 'windows' or 'darwin'
                   arch: x86_64 # Other valid options for linux: 'aarch64'
             - uses: actions/checkout@v3
-            - name: Build
+            - name: ShipIt
               run: |
                   cd ./src/lambda
-                  cargo lambda build --output-format zip --release
-            - name: Deploy
-              run: |
-                  cd ./src/lambda
+                  cargo lambda build --release --arm64 --output-format zip
                   cargo lambda deploy --iam-role ${{ secrets.IAM_ROLE }}
