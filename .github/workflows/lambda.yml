@@ -1,10 +1,10 @@
 name: RustLambda
 
 on:
-    # push:
-    #     branches: ['master']
-    # pull_request:
-    #     branches: ['master']
+    push:
+        branches: ['master']
+    pull_request:
+        branches: ['master']
 
 defaults:
     run:
@@ -31,4 +31,4 @@ jobs:
             - name: Build
               run: cargo lambda build --release --arm64 --output-format zip
             - name: Deploy
-              run: cargo lambda deploy --iam-role ${{ secrets.iam }}
+              run: cargo lambda deploy --iam-role ${{ secrets.IAM_ROLE }}

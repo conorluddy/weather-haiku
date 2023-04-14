@@ -4,24 +4,24 @@ use std::env;
 use structs::{ChatGPTCompletionResponse, CompletionRequest, Message};
 use ureq::{post, Error};
 
+const CHAT_GPT_MODEL: &str = "gpt-3.5-turbo";
+
 pub fn get_chatgpt_weather_haiku(message: String) -> Result<String, Error> {
     let url = "https://api.openai.com/v1/chat/completions";
-    let api_key = env::var("CHATGPT_API_KEY").unwrap_or("".to_string());
+    let api_key = env::var("CHATGPT_API_KEY").unwrap();
 
     if api_key.is_empty() {
         panic!("CHATGPT_API_KEY is not set");
     }
 
     let request = CompletionRequest {
-        model: "gpt-4".to_string(),
+        model: CHAT_GPT_MODEL.to_string(),
         messages: vec![Message {
             role: "user".to_string(),
-            content: format!("{} | weather Cinquain", message),
+            content: format!("1 weather haiku: {}", message),
         }],
-        temperature: 0.75,
+        temperature: 0.6,
     };
-
-    // Limerick / Cinquain
 
     let response = post(&url)
         .set("Content-Type", "application/json")
