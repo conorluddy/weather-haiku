@@ -13,46 +13,48 @@
 
         <!-- TODO: Strip this back to just the fonts we need -->
         <link
-            href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100;400&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;400&display=swap"
             rel="stylesheet"
         />
     </head>
 
-    <body class="loading">
-        <main class="content">
-            <div class="haiku"></div>
+    <body>
+        <background-noise>
+            <main class="content">
+                <haiku-text></haiku-text>
 
-            <div class="coords">Getting weather...</div>
+                <div class="coords">Getting weather...</div>
 
-            <div class="stats temperature">
-                <span>Temperature</span>
-                <span></span>
-            </div>
-            <div class="stats rain">
-                <span>Rain</span>
-                <span></span>
-            </div>
-            <div class="stats wind">
-                <span>Wind</span>
-                <span></span>
-            </div>
-            <div class="stats high-clouds">
-                <span>High clouds</span>
-                <span></span>
-            </div>
-            <div class="stats middle-clouds">
-                <span>Middle clouds</span>
-                <span></span>
-            </div>
-            <div class="stats low-clouds">
-                <span>Low clouds</span>
-                <span></span>
-            </div>
-            <small class="wip">
-                <span>Better UI coming soon</span>
-            </div>
-            
-        </main>
+                <weather-point>
+                    <span>Temperature</span>
+                    <span class="temperature"></span>
+                </weather-point>
+                <weather-point>
+                    <span>Rain</span>
+                    <span class="rain"></span>
+                </weather-point>
+                <weather-point>
+                    <span>Wind</span>
+                    <span class="wind"></span>
+                </weather-point>
+                <weather-point>
+                    <span>High clouds</span>
+                    <span class="high-clouds"></span>
+                </weather-point>
+                <weather-point>
+                    <span>Middle clouds</span>
+                    <span class="middle-clouds"></span>
+                </weather-point>
+                <weather-point>
+                    <span>Low clouds</span>
+                    <span class="low-clouds"></span>
+                </weather-point>
+
+                <small class="wip"> Better UI coming soon </small>
+
+                <loading-spinner></loading-spinner>
+            </main>
+        </background-noise>
         <script type="module" src="js/index.js"></script>
     </body>
 </html>
