@@ -6,10 +6,6 @@ on:
     pull_request:
         branches: ['master']
 
-defaults:
-    run:
-        working-directory: ./src/lambda
-
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -29,6 +25,13 @@ jobs:
                   arch: x86_64 # Other valid options for linux: 'aarch64'
             - uses: actions/checkout@v3
             - name: Build
-              run: cargo lambda build --release --arm64 --output-format zip
+              run: |
+                cd ./src/lambda
+                cargo lambda build --output-format zip --release
             - name: Deploy
-              run: cargo lambda deploy --iam-role ${{ secrets.IAM_ROLE }}
+              run:  |
+                cd ./src/lambda
+                cargo lambda deploy --iam-role ${{ secrets.IAM_ROLE }}
+
+    
+    cargo lambda build --output-format zip --release
