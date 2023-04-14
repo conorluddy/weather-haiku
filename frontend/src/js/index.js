@@ -37,7 +37,7 @@ navigator.geolocation.getCurrentPosition(
             loadingSpinner.remove()
             new TypeShuffle(haikuElement).trigger('fx1')
         } catch (error) {
-            haikuElement.innerHTML = 'Error getting weather...'
+            haikuElement.innerHTML = 'Error getting weather forecast!'
             console.error(error)
         }
     },
@@ -69,6 +69,7 @@ function updateWeatherUi(weather) {
     lowCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_low}%`
 
     const weatherWindEl = document.querySelector('weather-wind')
+
     weatherWindEl.setAttribute(
         'wind-speed',
         weather.data.instant.details.wind_speed
