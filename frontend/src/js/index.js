@@ -27,11 +27,11 @@ navigator.geolocation.getCurrentPosition(
         const loadingSpinner = document.querySelector('loading-spinner')
 
         try {
-            const res = await loadHaiku(latitude, longitude)
-            const { haiku, weather } = res.json()
+            const haikuResponse = await loadHaiku(latitude, longitude)
+            const { haiku, weather } = await haikuResponse.json()
             coordContainer.innerHTML = `${latitude}, ${longitude}`
-            if (!!haiku) updateHaikuUi(haiku)
-            if (!!weather) updateWeatherUi(weather)
+            updateHaikuUi(haiku)
+            updateWeatherUi(weather)
             loadingSpinner.remove()
             new TypeShuffle(haikuElement).trigger('fx1')
         } catch (error) {
