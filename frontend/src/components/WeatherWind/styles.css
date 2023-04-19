@@ -6,7 +6,7 @@
     position: relative;
 }
 
-#wind-direction {
+:host #wind-direction {
     display: block;
     position: absolute;
     left: 50%;
@@ -23,7 +23,7 @@
         5px -10px 15px -1px #fff3 inset, -5px 10px 15px -1px #0005 inset;
 }
 
-#wind-direction::before {
+:host #wind-direction::before {
     content: '';
     position: absolute;
     left: 50%;
@@ -36,7 +36,7 @@
         1px 1px 1px 1px #fff1 inset;
 }
 
-#wind-direction::after {
+:host #wind-direction::after {
     content: '';
     position: absolute;
     line-height: 0;
@@ -50,7 +50,7 @@
         1px 1px 1px 1px #fff5 inset;
 }
 
-nav {
+:host nav {
     display: block;
     position: absolute;
     left: 50%;
@@ -60,7 +60,7 @@ nav {
     height: 250px;
 }
 
-nav small {
+:host nav small {
     display: block;
     position: absolute;
     line-height: 0;
@@ -70,43 +70,43 @@ nav small {
     text-indent: -0.25em;
 }
 
-.n {
+:host .n {
     left: 50%;
     top: 10%;
 }
 
-.ne {
+:host .ne {
     display: none;
 }
 
-.e {
+:host .e {
     left: 90%;
     top: 50%;
 }
 
-.se {
+:host .se {
     display: none;
 }
 
-.s {
+:host .s {
     left: 50%;
     top: 90%;
 }
 
-.sw {
+:host .sw {
     display: none;
 }
 
-.w {
+:host .w {
     left: 10%;
     top: 50%;
 }
 
-.nw {
+:host .nw {
     display: none;
 }
 
-.label {
+:host .label {
     left: 52%;
     top: 70%;
     transform: translate(-50%, -50%);
