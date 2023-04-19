@@ -27,24 +27,24 @@ navigator.geolocation.getCurrentPosition(
         const loadingSpinner = document.querySelector('loading-spinner')
 
         try {
-            const { haiku, weather } = (
-                await loadHaiku(latitude, longitude)
-            ).json()
-
+            const haikuResponse = await loadHaiku(latitude, longitude)
+            const { haiku, weather } = await haikuResponse.json()
             coordContainer.innerHTML = `${latitude}, ${longitude}`
             updateHaikuUi(haiku)
             updateWeatherUi(weather)
             loadingSpinner.remove()
             new TypeShuffle(haikuElement).trigger('fx1')
         } catch (error) {
-            haikuElement.innerHTML = 'Error getting weather...'
+            haikuElement.innerHTML = 'Error getting weather forecast!'
             console.error(error)
+            loadingSpinner.remove()
         }
     },
     (error) => {
         haikuElement.innerHTML =
             'Error getting weather. App doesnt have permission to get location.'
         console.error(error)
+        loadingSpinner.remove()
     }
 )
 
@@ -69,6 +69,7 @@ function updateWeatherUi(weather) {
     lowCloudsContainer.innerHTML = `${weather.data.instant.details.cloud_area_fraction_low}%`
 
     const weatherWindEl = document.querySelector('weather-wind')
+
     weatherWindEl.setAttribute(
         'wind-speed',
         weather.data.instant.details.wind_speed
@@ -78,59 +79,3 @@ function updateWeatherUi(weather) {
         weather.data.instant.details.wind_from_direction
     )
 }
-
-// const fakeResponse = {
-//     request_id: 'b4d39626-46b9-420c-9914-b8a4b7a91e50',
-//     haiku: 'Low clouds, medium too,\nHumidity and wind both high,\nRain, but just a bit.',
-//     weather: {
-//         data: {
-//             instant: {
-//                 details: {
-//                     air_pressure_at_sea_level: 1006.6,
-//                     air_temperature: 10.4,
-//                     cloud_area_fraction: 65.6,
-//                     cloud_area_fraction_high: 0.8,
-//                     cloud_area_fraction_low: 15.6,
-//                     cloud_area_fraction_medium: 61.7,
-//                     dew_point_temperature: 3.0,
-//                     fog_area_fraction: 0.0,
-//                     relative_humidity: 60.7,
-//                     wind_from_direction: 313.5,
-//                     wind_speed: 5.1,
-//                     wind_speed_of_gust: null,
-//                 },
-//             },
-//             next_1_hours: {
-//                 summary: { symbol_code: 'lightrainshowers_day' },
-//                 details: {
-//                     air_temperature_max: null,
-//                     air_temperature_min: null,
-//                     precipitation_amount: 0.1,
-//                     precipitation_amount_max: null,
-//                     precipitation_amount_min: null,
-//                     probability_of_precipitation: null,
-//                     probability_of_thunder: null,
-//                     ultraviolet_index_clear_sky_max: null,
-//                 },
-//             },
-//             next_6_hours: {
-//                 summary: { symbol_code: 'fair_day' },
-//                 details: {
-//                     air_temperature_max: 10.1,
-//                     air_temperature_min: 5.2,
-//                     precipitation_amount: 0.4,
-//                     precipitation_amount_max: null,
-//                     precipitation_amount_min: null,
-//                     probability_of_precipitation: null,
-//                     probability_of_thunder: null,
-//                     ultraviolet_index_clear_sky_max: null,
-//                 },
-//             },
-//             next_12_hours: {
-//                 summary: { symbol_code: 'fair_day' },
-//                 details: null,
-//             },
-//         },
-//         time: '2023-04-14T16:00:00Z',
-//     },
-// }
