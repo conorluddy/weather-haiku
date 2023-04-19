@@ -1,4 +1,4 @@
-import css from './HaikuText.styles'
+import css from 'bundle-text:./styles.css'
 
 const template = document.createElement('template')
 
